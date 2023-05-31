@@ -1,0 +1,14 @@
+Hashtables are important and very useful for coding interviews.
+Keep them at the top of your mind for problem solving.
+
+A hashtable is an array containing keys and values. The Key is a string, while the Value can be anything. 
+
+Hashtables can find, insert, and delete in O(1).
+
+Hash Function: Takes in the key and maps it into an index in the array. 
+
+Collision: Situation where two different keys to map to the same index. Differnt ways to manage Collisions.
+
+Chaining: A method of managing Collisions. Store data in a linked list for each index in the array. Each node will store the data and the key.
+
+vs. Hashmap?
