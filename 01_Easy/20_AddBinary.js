@@ -108,5 +108,31 @@ function addBinaryTwo(a, b) {
 // console.log(convertToDec(convertToBinTwo(5)));
 // console.log(convertToDec(convertToBinTwo(6)));
 
-console.log(101);
-console.log(010);
+// Doesn't fucking work lol
+function addBinaryThree(a, b) {
+  let total = "";
+  let carry = 0;
+  let i = a.length - 1;
+  let j = b.length - 1;
+  while (i >= 0 || j >= 0) {
+    let A = Number(a[i]) ? Number(a[i]) : 0;
+    let B = Number(b[j]) ? Number(b[j]) : 0;
+
+    total = String(A ^ B ^ carry) + total;
+    if (A == B && A != carry) carry = Number(!Number(carry));
+    i--;
+    j--;
+  }
+  return total;
+}
+
+// TRUTH TABLE:
+// a b carry = sum newCarry
+// 0 0 0 = 0 0
+// 0 0 1 = 1 0
+// 0 1 0 = 1 0
+// 1 0 0 = 1 0
+// 0 1 1 = 0 1
+// 1 0 1 = 0 1
+// 1 1 0 = 0 1
+// 1 1 1 = 1 1

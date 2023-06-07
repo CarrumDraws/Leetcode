@@ -8,14 +8,12 @@ var hasCycle = function (head) {
   // If fast reaches the end its not a cycle.
   // If fast eventually equals slow, it is a cycle.
 
-  let slowNode = head;
-  let fastNode = head;
-  while (fastNode != null && fastNode.next != null) {
-    slowNode = slowNode.next;
-    fastNode = fastNode.next.next;
-    if (slowNode == fastNode) {
-      return true;
-    }
+  let slow = head;
+  let fast = head;
+  while (fast && fast.next) {
+    slow = slow.next;
+    fast = fast.next.next;
+    if (fast == slow) return true;
   }
   return false;
 };

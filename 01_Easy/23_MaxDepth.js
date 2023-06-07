@@ -36,3 +36,5 @@ var maxDepthTwo = function (root) {
   calcDepth(root);
   return maxDepth;
 };
+
+// ---

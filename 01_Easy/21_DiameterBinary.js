@@ -25,3 +25,31 @@ var diameterOfBinaryTree = function (root) {
   findMaxDiameter(root);
   return max;
 };
+
+var diameterOfBinaryTreeTwo = function (root) {
+  let max = 0;
+
+  function recurDiam(root) {
+    if (!root) return 0;
+    let leftLen = recurDiam(root.left);
+    let rightLen = recurDiam(root.right);
+    max = Math.max(leftLen + rightLen, max);
+    return Math.max(leftLen + 1, rightLen + 1);
+  }
+  recurDiam(root);
+  return max;
+};
+
+var diameterOfBinaryTreeTwo = function (root) {
+  let max = 0;
+
+  function recurDiam(node) {
+    if (!node) return 0;
+    let leftLen = recurDiam(node.left);
+    let rightLen = recurDiam(node.right);
+    max = Math.max(leftLen + rightLen, max);
+    return Math.max(leftLen + 1, rightLen + 1);
+  }
+  recurDiam(root);
+  return max;
+};
