@@ -4,53 +4,6 @@
  */
 // Given an integer array nums, return all the triplets [nums[i], nums[j], nums[k]] such that nums[i] + nums[j] + nums[k] == 0. i != j != k.
 // O(n^2)
-var threeSum = function (nums) {
-  let hash = {}; // Store 'sum : val1, val2'
-  let answer = [];
-  // Cycle throguh individuals, but store pairs.
-  for (let i = 0; i < nums.length; i++) {
-    for (let j = i + 1; j < nums.length; j++) {
-      let complement = -nums[j];
-      if (hash[complement])
-        answer.push([hash[complement][0], hash[complement][1], nums[j]]);
-      hash[nums[j] + nums[i]] = [nums[i], nums[j]];
-    }
-  }
-  return answer;
-};
-// Hashtable doesnt work because key values get overridden. by the same sums. Multiple combos could have the same sum.
-
-// General Idea: Sort array. Iterate over the elements, skipping over duplicate elements.
-// For each element iterated, perform twoSum on the subarray from that element to the end.
-var threeSumTwo = function (nums) {
-  let answer = [];
-  nums = nums.sort();
-  for (let a = 0; a < nums.length; a++) {
-    let set = new Set(); // Stores previously found combinatory sums
-    // Don't iterate on duplicate value
-    if (a == 0 || nums[a] != nums[a - 1]) {
-      // Perform TwoSum on subarray from 'b' to end
-      // Doesn't work with '[0, 0, 0, 0].' Lots of weird things to keep track of.
-      for (let b = a + 1; b < nums.length; b++) {
-        let complement = -(nums[a] + nums[b]);
-        if (
-          set.has(complement) &&
-          !answer.includes([nums[a], nums[b], complement])
-        )
-          answer.push([nums[a], nums[b], complement]);
-        set.add(nums[b]);
-      }
-    }
-  }
-  return answer;
-};
-// The problem is I only check for equality in the "a" loop. In the "b" loop, I don't check for equality since I may need two of the same value to create a triplet, like [0, 0, 0]. Do I make a special case for [0, 0, 0] since its the only triplet with two repeated values...?
-
-// Instead of keeping track of which twoSum is being calculated (to avoid [0, 0, 0, 0] issues), we can take advantage of the sorted array and use two pointers on either side.
-// If left + right > target, move right down.
-// If left + right < target, move left down.
-// While shifting, skip over repeated values.
-// We can keep whittling the left and right pointers down until left >= right, then stop.
 
 // WORKS ------
 var threeSumThree = function (nums) {
@@ -148,6 +101,32 @@ var threeSumFour = function (nums) {
 // So Basically... We can avoid repeats by sorting them first, then skipping over them.
 // We can also cut runtime by breaking/returning when input is bound to fail.
 
-let nums = [-1, 0, 1, 2, -1, -4, -2, -3, 3, 0, 4]; // [-3,-1,4]? [-2,-1,3]?
-// Correct Output: [[-4,0,4],[-4,1,3],[-3,-1,4],[-3,0,3],[-3,1,2],[-2,-1,3],[-2,0,2],[-1,-1,2],[-1,0,1]]
-console.log(threeSumThree(nums));
+// PRACTICE COPY ---
+var threeSumFive = function (nums) {
+  let ret = [];
+  nums.sort((a, b) => {
+    return a - b;
+  });
+  for (let i = 0; i < nums.length - 2; i++) {
+    if (i != 0 && nums[i - 1] == nums[i]) continue;
+    let complement = 0 - nums[i];
+    let left = i + 1;
+    let right = nums.length - 1;
+    while (left < right) {
+      if (nums[left] + nums[right] == complement)
+        ret.push([nums[i], nums[left], nums[right]]);
+      if (nums[left] + nums[right] <= complement) {
+        left++;
+        while (nums[left] == nums[left - 1]) left++;
+      } else {
+        right--;
+        while (nums[right] == nums[right + 1]) right--;
+      }
+    }
+  }
+  return ret;
+};
+
+let nums = [-1, 0, 1, 2, -1, -4]; // [-3,-1,4]? [-2,-1,3]?
+
+console.log(threeSumFive(nums));

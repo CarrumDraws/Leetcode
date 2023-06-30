@@ -8,26 +8,26 @@ var kClosest = function (points, k) {
   // For each point, calc the distance from (0, 0) and put them in a distances array.
   // Iterate thorugh the array k times and find the smallest value each time, add it to the return val.
 
-  function calcDistance(point) {
+  function calcDist(point) {
     let [x, y] = point;
     return Math.abs(Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2)));
   }
 
   let distances = []; // Maps to points object
   for (point of points) {
-    distances.push(calcDistance(point));
+    distances.push(calcDist(point));
   }
 
   // Find smallest value each time, add it to return value.
   let retVal = [];
   for (let i = 0; i < k; i++) {
-    let minIndex = 0;
+    let minIdx = 0;
     for (let j in distances) {
-      if (distances[j] < distances[minIndex]) minIndex = j;
+      if (distances[j] < distances[minIdx]) minIdx = j;
     }
-    retVal.push(points[minIndex]);
-    points.splice(minIndex, 1);
-    distances.splice(minIndex, 1);
+    retVal.push(points[minIdx]);
+    points.splice(minIdx, 1);
+    distances.splice(minIdx, 1);
   }
   return retVal;
 };
@@ -36,21 +36,13 @@ var kClosest = function (points, k) {
 var kClosestTwo = function (points, k) {
   // Moves one element at index to the correct spot in the heap.
   function minHeapify(index) {
-    let leftIdx = leftChild(index);
-    let rightIdx = rightChild(index);
+    let left = leftChild(index);
+    let right = rightChild(index);
     let minIdx = index;
-
-    if (
-      points[leftIdx] &&
-      calcDistance(points[leftIdx]) < calcDistance(points[minIdx])
-    )
-      minIdx = leftIdx;
-    if (
-      points[rightIdx] &&
-      calcDistance(points[rightIdx]) < calcDistance(points[minIdx])
-    )
-      minIdx = rightIdx;
-
+    if (points[left] && calcDist(points[left]) < calcDist(points[minIdx]))
+      minIdx = left;
+    if (points[right] && calcDist(points[right]) < calcDist(points[minIdx]))
+      minIdx = right;
     swap(index, minIdx);
     if (index != minIdx) minHeapify(minIdx);
   }
@@ -72,7 +64,7 @@ var kClosestTwo = function (points, k) {
   }
 
   // Helper Funcs
-  function calcDistance(point) {
+  function calcDist(point) {
     let [x, y] = point;
     return Math.pow(x, 2) + Math.pow(y, 2);
   }
@@ -94,6 +86,7 @@ var kClosestTwo = function (points, k) {
   for (let i = 0; i < k; i++) {
     ret.push(remove());
   }
+  return ret;
 };
 
 // SORT IMPLEMENTATION O(nLogn)
@@ -108,11 +101,91 @@ var kClosestThree = function (points, k) {
   return points.slice(0, k);
 };
 
-// Priority Queue Implementation
-var kClosestFour = function (points, k) {};
+// Practice Retrys
+var kClosestFour = function (points, k) {
+  // Return the k closest points to (0, 0) from the arry of points.
+  // Min Heapify +
+
+  // Takes in index and moves it down to the correct location
+  function minHeapify(i) {
+    let leftIdx = getLeft(i);
+    let rightIdx = getRight(i);
+
+    // If Has left that is less than i...
+    if (
+      points[leftIdx] != undefined &&
+      calc(points[leftIdx]) < calc(points[i])
+    ) {
+      // ...and rightIdx doesn't exist or is smaller than...
+      if (
+        points[rightIdx] == undefined ||
+        calc(points[leftIdx]) >= calc(points[rightIdx])
+      ) {
+        // ...then swap.
+        swap(leftIdx, i);
+        minHeapify(leftIdx);
+      }
+    } else if (
+      points[rightIdx] != undefined &&
+      points[rightIdx] < points[leftIdx]
+    ) {
+      swap(rightIdx, i);
+      minHeapify(rightIdx);
+    }
+  }
+
+  // Return Dist from (0, 0)
+  function calc(coord) {
+    console.log(coord);
+    let x = coord[0];
+    let y = coord[1];
+    return Math.pow(x, 2) + Math.pow(y, 2);
+  }
+
+  // Call minHeapify from last leaf up
+  function Heapify() {
+    let lastLeaf = Math.floor((points.length - 2) / 2);
+    for (let i = lastLeaf; i >= 0; i--) {
+      minHeapify(i);
+    }
+  }
+
+  // Takes in index > Returns left child
+  function getLeft(i) {
+    return i * 2 + 1;
+  }
+
+  // Takes in index > Returns right child
+  function getRight(i) {
+    return i * 2 + 2;
+  }
+  function swap(i, j) {
+    let temp = points[i];
+    points[i] = points[j];
+    points[j] = temp;
+  }
+
+  // Remove top element of points
+  function remove() {
+    swap(0, points.length - 1);
+    let top = points.pop();
+    minHeapify(0);
+    return top;
+  }
+
+  Heapify();
+  console.log(coord);
+  let retArr = [];
+  for (let i = 0; i < k; i++) {
+    retArr.push(remove());
+  }
+};
+
 let points = [
   [1, 3],
   [-2, 2],
+  [2, -2],
 ];
-let k = 1;
-kClosestFour(points, k);
+// [[-2,2], [1, 3]]
+let k = 2;
+console.log(kClosestFour(points, k));

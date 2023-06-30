@@ -1,5 +1,5 @@
 // Adjacency List implementation of Undirected Graph
-// Each Vertex has a Map(Object) of Edges
+// Essentially an Object of { Vertex: [Arr of Vertices] }
 import { Queue } from "../Orders/Queue.js";
 
 class Graph {
@@ -26,7 +26,7 @@ class Graph {
     }
   }
 
-  // BFS: USes Queues
+  // BFS: Uses Queues
   bfs(node) {
     var visited = {}; // Hashtable- tracks visited nodes
     var queue = new Queue(); // Queue- determines visit order
