@@ -6,5 +6,12 @@ function isPalindrome(s) {
   return forwards == backwards;
 }
 
+// Practice
+function isPalindromeTwo(s) {
+  s = s.replace(/[^A-Z0-9]+/gi, "").toLowerCase();
+  let rev = s.split("").reverse().join("");
+  return s === rev;
+}
+
 let str = "Li!nu%x#hint* is$ th^e bes`t web’si!te";
-isPalindrome(str);
+console.log(isPalindromeTwo(str));

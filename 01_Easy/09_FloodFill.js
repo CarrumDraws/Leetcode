@@ -36,12 +36,10 @@ var floodFill = function (image, sr, sc, color) {
   return image;
 };
 
-// New?
-
 let image = [
   [0, 0, 0],
   [0, 0, 0],
 ];
 Print2DArr(image);
-let newArr = floodFill(image, 1, 0, 2);
+let newArr = floodFillTwo(image, 1, 0, 2);
 Print2DArr(image);

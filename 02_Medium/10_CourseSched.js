@@ -3,82 +3,8 @@
  * @param {number[][]} prerequisites
  * @return {boolean}
  */
-// prerequisites : [[D, C], [C, B], [B: A]]
-var canFinish = function (numCourses, prerequisites) {
-  // Takes in [course: prereq]
-  //   function recurCourse(currCourse) {}
-
-  // Find Start Course: an [A, B] in the array such that B != any of the A's.
-  let visited = []; // Courses that you've looked at
-  let currCourse = prerequisites[0]; // Current course your are looking at
-  let startCourse; // Course [A, B] to start at
-  while (!startCourse) {
-    console.log("!");
-    let nextCourse = prerequisites.filter(
-      (prereq) => prereq[0] == currCourse[1]
-    )[0];
-    if (!nextCourse) startCourse = currCourse;
-    else if (visited.includes(currCourse[0])) return false; // Loop Found
-    else {
-      visited.push(currCourse[0]);
-      currCourse = nextCourse;
-    }
-  }
-
-  let completed = {}; // Courses sucessfully taken
-
-  // Find Course Forwards
-  // Find Course Backwards
-  // course = [course: prereq]
-  let count = 0;
-  let visitedCourses = new Set(); // Stores individual classes
-  function findCourse(course) {
-    //  Loop Found
-    if (visitedCourses.has(course[0])) return false;
-    visitedCourses.push(course[0]);
-    count++;
-    let nextCourse = prerequisites.filter(
-      (prereq) => prereq[1] == currCourse[0]
-    )[0];
-
-    // Find Next Course
-    if (nextCourse) findCourse(nextCourse);
-    // Find Prereq Course
-    if (prevCourse) findCourse(prevCourse);
-  }
-
-  findCourse(startCourse);
-};
-
-// WORKS : Put into hashtable(n) + Iterate 'numCourse' times(c) > Iterate through courses(n) > Iterate through pastCourses(n) = O(n^3). Terrible! :) -----
-var canFinishTwo = function (numCourses, prerequisites) {
-  let courses = {}; // Stores all courses as 'course: [prereqs]'
-  let pastCourses = []; // Stores courses you have taken
-  // Put Courses + Prereqs into Hashtable
-  for (let course of prerequisites) {
-    let [currClass, preClass] = course;
-    if (!courses[preClass]) courses[preClass] = [];
-    if (!courses[currClass]) courses[currClass] = [];
-    courses[currClass].push(preClass);
-  }
-
-  for (let i = 0; i < numCourses; i++) {
-    for (let course in courses) {
-      let prereqs = courses[course];
-      let canTake = prereqs.every((prereq) => pastCourses.includes(prereq));
-      // If course can be taken...
-      if (canTake) {
-        pastCourses.push(Number(course)); // Add course to pastCourses[]...
-        delete courses[course]; // ...delete course from courses...
-        break; // ...and break out.
-      }
-    }
-  }
-  return Object.keys(courses).length == 0;
-};
-
 // Optimized using DFS:
-var canFinishThree = function (numCourses, prerequisites) {
+var canFinish = function (numCourses, prerequisites) {
   let courses = {}; // All Courses
   let pastCourses = new Set();
   let seen = new Set();
@@ -117,8 +43,51 @@ var canFinishThree = function (numCourses, prerequisites) {
   return !loopFound && numCourses >= pastCourses.size;
 };
 
+var canFinishTwo = function (numCourses, prerequisites) {
+  let classes = {}; // "class" : [prereqs]
+  let taken = new Set(); // Stores taken courses
+  let currTaking = new Set(); // Stores currently active courses (Finds Cycles)
+  // Structure data into "classes" object
+  for (let i = 0; i < numCourses; i++) {
+    classes[i] = [];
+  }
+  for (let prereq of prerequisites) {
+    classes[prereq[0]] = [...classes[prereq[0]], prereq[1]];
+  }
+
+  // Call recur() on each element
+  for (let i = 0; i < numCourses; i++) {
+    if (!recur(i)) return false;
+  }
+  return true;
+
+  // If loop detected, return false.
+  // else, return true.
+  function recur(course) {
+    let canTake = true;
+    // return false if Loop Detected
+    if (currTaking.has(course)) return false;
+    currTaking.add(course);
+    // Return true if you've already taken this course
+    if (taken.has(course)) {
+      currTaking.delete(course);
+      return true;
+    }
+    // Else, recur on the prereqs...
+    for (let i = 0; i < classes[course].length; i++) {
+      canTake = canTake && recur(classes[course][i]);
+    }
+    // ...and if you took the prereqs, you took this course!
+    if (canTake) {
+      taken.add(course);
+      currTaking.delete(course);
+    }
+    return canTake;
+  }
+};
+
 let arr = [
   [1, 0],
   [0, 1],
 ];
-console.log(canFinishThree(2, arr));
+console.log(canFinish(2, arr));

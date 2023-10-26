@@ -1,5 +1,5 @@
 var TimeMap = function () {
-  this.data = {};
+  this.obj = {};
 };
 
 /**
@@ -10,8 +10,8 @@ var TimeMap = function () {
  */
 // Store [timestamp, value] in this.data
 TimeMap.prototype.set = function (key, value, timestamp) {
-  if (!this.data[key]) this.data[key] = [];
-  this.data[key].push([timestamp, value]);
+  if (!this.obj[key]) this.obj[key] = [];
+  this.obj[key].push([value, timestamp]);
 };
 
 /**
@@ -20,44 +20,29 @@ TimeMap.prototype.set = function (key, value, timestamp) {
  * @return {string}
  */
 // Return greatest value thats <= timestamp, else return ""
-// Use Binary Search
 TimeMap.prototype.get = function (key, timestamp) {
-  if (!this.data[key]) return ""; // Key doesnt exist
-  // Binary Search the smallest value that can be found
-  let data = ""; // Data to be returned
+  let ret = "";
+  let values = this.obj[key];
+  if (!values) return ret;
   let start = 0;
-  let end = this.data[key].length - 1;
-  let mid = Math.floor((start + end) / 2);
+  let end = values.length - 1;
+
+  // Normal Binary Search
   while (start <= end) {
-    if (this.data[key][mid][0] == timestamp) return this.data[key][mid][1];
-    else if (this.data[key][mid][0] < timestamp) {
-      data = this.data[key][mid][1];
+    let mid = Math.floor((start + end) / 2);
+    let currVal = values[mid][0];
+    let currTime = values[mid][1];
+    if (currTime == timestamp) {
+      return currVal; // Definately Answer
+    } else if (currTime < timestamp) {
       start = mid + 1;
-    } // Valid value
-    else end = mid - 1; // Invalid
-    mid = Math.floor((start + end) / 2);
+      ret = currVal; // Possibly Answer
+    } else {
+      end = mid - 1;
+    }
   }
-  return data;
+  return ret;
 };
-
-// function binFind(arr, target) {
-//   let start = 0;
-//   let end = arr.length - 1;
-//   let mid = Math.floor((start + end) / 2);
-//   let res = "";
-//   while (start <= end) {
-//     if (arr[mid] == target) return arr[start];
-//     else if (arr[mid] < target) {
-//       res = arr[mid];
-//       start = mid + 1;
-//     } // Valid value
-//     else end = mid - 1; // Invalid
-//     mid = Math.floor((start + end) / 2);
-//   }
-//   return res;
-// }
-
-// obj.set(key, value, timestamp)
 
 var obj = new TimeMap();
 obj.set("foo", "bar", 1);

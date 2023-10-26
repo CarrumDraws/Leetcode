@@ -1,4 +1,8 @@
-import { LinkedList, printList } from "../NewStuff/LinkedLists/LinkedList.js";
+import {
+  Node,
+  LinkedList,
+  printList,
+} from "../NewStuff/LinkedLists/LinkedList.js";
 
 /**
  * Definition for singly-linked list.
@@ -14,40 +18,32 @@ import { LinkedList, printList } from "../NewStuff/LinkedLists/LinkedList.js";
  * @return {ListNode}
  */
 var mergeTwoLists = function (list1, list2) {
-  // Merge Two Sorted Linked Lists
+  // Shuffle list2 into list 1
+  if (!list1) return list2;
   let head = list1;
-  let currOne = list1;
-  let prevOne = null;
-  let currTwo = list2;
-
-  if (currOne == null) {
-    return currTwo;
-  }
-
-  while (currTwo != null) {
-    if (currTwo.val <= currOne.val) {
-      // Insert list2 into list1
-      if (prevOne == null) {
+  let prev = null;
+  while (list1 && list2) {
+    if (list1.val >= list2.val) {
+      let head2 = list2.next;
+      if (!prev) {
         // Head Insert
-        let tempTwo = currTwo.next;
-        currTwo.next = currOne;
-        currOne = currTwo;
-        head = currTwo;
-        currTwo = tempTwo;
+        list2.next = list1;
+        head = list2;
+        list1 = list2;
       } else {
-        // Body/Tail Insert
-        let tempTwo = currTwo.next;
-        prevOne.next = currTwo;
-        currTwo.next = currOne;
-        prevOne = currTwo;
-        currTwo = tempTwo;
+        // Body (Behind) Insert
+        prev.next = list2;
+        list2.next = list1;
+        prev = list2;
       }
+      list2 = head2;
     } else {
-      // Else move currOne and prevPointerOne up
-      prevOne = currOne;
-      currOne = currOne.next;
+      prev = list1;
+      list1 = list1.next;
     }
   }
+  // Tail Insert
+  if (!list1) prev.next = list2;
   return head;
 };
 
@@ -72,6 +68,32 @@ var mergeTwoListsTwo = function (list1, list2) {
   }
 };
 
+// PRACTICE
+// You are given the heads of two sorted linked lists list1 and list2.
+// Merge the two lists into one sorted list. The list should be made by splicing together the nodes of the first two lists.
+// Try this iteratively!!
+// Start with wording it out.
+var mergeTwoListsThree = function (list1, list2) {};
+
+let insertAt = function (list, newNode, location) {
+  if (location == 0) {
+    // Head Insert
+    newNode.next = list;
+    return newNode;
+  } else {
+    // Body/Tail Insert
+    let head = list;
+    let prevNode = null;
+    for (let i = 0; i < location; i++) {
+      prevNode = list;
+      list = list.next;
+    }
+    prevNode.next = newNode;
+    newNode.next = list;
+    return head;
+  }
+};
+
 let list1 = new LinkedList();
 list1.add(1);
 list1.add(3);
@@ -82,5 +104,8 @@ list2.add(1);
 list2.add(2);
 list2.add(4);
 
-let list = mergeTwoListsTwo(list1.head, list2.head);
+let list = mergeTwoListsThree(list1.head, list2.head);
 printList(list);
+// let newNode = new Node(10);
+// let list = insertAt(list1.head, newNode, 3);
+// printList(list);

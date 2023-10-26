@@ -26,7 +26,20 @@ var twoSum = function (nums, target) {
   return -1;
 };
 
+// PRACTICE
+// Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.
+var twoSumTwo = function (nums, target) {
+  let comp;
+  let hash = {};
+  for (let i = 0; i <= nums.length; i++) {
+    comp = target - nums[i];
+    if (hash[comp] != null) return [hash[comp], i];
+    else hash[nums[i]] = i;
+  }
+};
+
 let nums = [2, 7, 11, 15];
 let target = 9;
-let result = twoSum(nums, target);
+let result = twoSumTwo(nums, target);
+
 printArray(result);

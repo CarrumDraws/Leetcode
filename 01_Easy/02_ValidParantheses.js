@@ -3,22 +3,17 @@ var isValid = function (s) {
   // Use push and pop for arrays!
 
   // My Implementation
-  //   let stack = [];
-  //   for (let char of s) {
-  //     if (char == "(" || char == "{" || char == "[") {
-  //       stack.push(char);
-  //     } else {
-  //       let match = stack.pop();
-  //       if (char == ")" && match !== "(") {
-  //         return false;
-  //       } else if (char == "}" && match !== "{") {
-  //         return false;
-  //       } else if (char == "]" && match !== "[") {
-  //         return false;
-  //       }
-  //     }
+  // let stack = [];
+  // for (let i = 0; i < s.length; i++) {
+  //   if (s[i] == "(" || s[i] == "{" || s[i] == "[") {
+  //     stack.push(s[i]);
+  //   } else {
+  //     if (s[i] == ")" && stack.pop() !== "(") return false;
+  //     if (s[i] == "}" && stack.pop() !== "{") return false;
+  //     if (s[i] == "]" && stack.pop() !== "[") return false;
   //   }
-  //     return stack.length === 0;
+  // }
+  // return stack.length == 0;
 
   // Fancy Implementation
   const hashMap = { "(": ")", "{": "}", "[": "]" };
@@ -38,5 +33,5 @@ var isValid = function (s) {
   return stack.length === 0;
 };
 
-let val = isValid("([])");
+let val = isValidThree("([])");
 console.log(val);

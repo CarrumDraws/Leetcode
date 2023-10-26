@@ -28,26 +28,21 @@ export class LinkedList {
   // Inserts at location. Starts at 0.
   insertAt(val, location) {
     let newNode = new Node(val);
-    // insert at head
     if (location == 0) {
-      let tempNode = this.head;
-      this.head = newNode;
-      newNode.next = tempNode;
+      // Head Insert
+      newNode.next = list;
+      return newNode;
     } else {
-      // insert in body and tail
-      let currNode = this.head;
+      // Body/Tail Insert
+      let head = list;
       let prevNode = null;
       for (let i = 0; i < location; i++) {
-        if (currNode == null) {
-          console.log("Location OutOfBounds: insertAt() Failed");
-          return -1;
-        }
-
-        prevNode = currNode;
-        currNode = currNode.next;
+        prevNode = list;
+        list = list.next;
       }
       prevNode.next = newNode;
-      newNode.next = currNode;
+      newNode.next = list;
+      return head;
     }
   }
 

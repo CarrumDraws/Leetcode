@@ -1,46 +1,28 @@
 // Loop Search function
 export function BinarySearch(arr, target) {
-  let start = 0;
-  let end = arr.length - 1;
-  let mid = Math.floor((start + end) / 2);
-  while (start <= end) {
-    if (arr[mid] == target) return arr[mid];
-    if (arr[mid] < target) start = mid + 1;
-    else end = mid - 1;
-    mid = Math.floor((start + end) / 2);
+  let min = 0;
+  let max = arr.length - 1;
+  while (min <= max) {
+    let mid = Math.floor((min + max) / 2);
+    if (arr[mid] == target) return mid;
+    if (mid < target) min = mid + 1;
+    else max = mid - 1;
   }
-  return "";
+  return -1;
 }
 
-// Recursive Search
-export function RecurBinarySearch(
-  arr,
-  target,
-  start = 0,
-  end = arr.length - 1
-) {
-  if (start > end) return false;
-
-  let mid = Math.floor((start + end) / 2);
-  if (arr[mid] === target) return mid;
-
-  if (arr[mid] > target) return RecurBinarySearch(arr, target, start, mid - 1);
-  else return RecurBinarySearch(arr, target, mid + 1, end);
-}
-// Binary Search that finds next closest value
+// Binary Search that finds (last) closest value
 function binFind(arr, target) {
-  let start = 0;
-  let end = arr.length - 1;
-  let mid = Math.floor((start + end) / 2);
-  let res = "";
-  while (start <= end) {
-    if (arr[mid] == target) return arr[start];
-    else if (arr[mid] < target) {
-      res = arr[mid];
-      start = mid + 1;
-    } // Valid value
-    else end = mid - 1; // Invalid
-    mid = Math.floor((start + end) / 2);
+  let result = -1;
+  let min = 0;
+  let max = arr.length - 1;
+  while (min <= max) {
+    let mid = Math.floor((min + max) / 2);
+    if (arr[mid] == target) return arr[mid];
+    if (arr[mid] < target) {
+      result = arr[mid]; // Use a "Laggy" Variable
+      min = mid + 1;
+    } else max = mid - 1;
   }
-  return res;
+  return result;
 }
