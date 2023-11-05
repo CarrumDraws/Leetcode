@@ -14,3 +14,15 @@ var maxArea = function (height) {
   }
   return max;
 };
+
+var maxArea = function (height) {
+  let max = 0;
+  let left = 0;
+  let right = height.length - 1;
+  while (left < right) {
+    let minWall = Math.min(height[left], height[right]);
+    max = Math.max(minWall * (right - left), max);
+    height[left] <= height[right] ? left++ : right--;
+  }
+  return max;
+};

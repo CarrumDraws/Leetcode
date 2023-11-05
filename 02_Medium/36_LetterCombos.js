@@ -2,10 +2,10 @@
  * @param {string} digits
  * @return {string[]}
  */
-// Given a string containing digits from 2-9 inclusive, return all possible letter combinations that the number could represent. Return the answer in any order.
 var letterCombinations = function (digits) {
-  let ret = [];
-  let hash = {
+  if (digits.length <= 0) return [];
+  let arr = [];
+  let map = {
     2: ["a", "b", "c"],
     3: ["d", "e", "f"],
     4: ["g", "h", "i"],
@@ -15,23 +15,18 @@ var letterCombinations = function (digits) {
     8: ["t", "u", "v"],
     9: ["w", "x", "y", "z"],
   };
-  // str = curr built string
-  // idx = curr index in 'digits' to be iterated on
-  function recurCombo(str, idx) {
-    if (idx > digits.length - 1) {
-      ret.push(str);
-      return;
-    }
 
-    let hashChars = hash[digits[idx]]; // Array of chars that curr digit could equal
-    // Loop through hash chars, appending them + recursing
-    for (let j = 0; j < hashChars.length; j++) {
-      recurCombo(str + hashChars[j], idx + 1);
+  // idx = pointer to current index, str = built string
+  function recur(idx, str) {
+    if (idx >= digits.length) arr.push(str);
+    else {
+      for (let char of map[Number(digits.charAt(idx))]) {
+        recur(idx + 1, str + char);
+      }
     }
   }
-
-  digits.length > 0 ? recurCombo("", 0) : null;
-  return ret;
+  recur(0, "");
+  return arr;
 };
 
 let digits = "23";

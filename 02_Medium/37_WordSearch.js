@@ -3,121 +3,130 @@
  * @param {string} word
  * @return {boolean}
  */
-// WORKS but is extremely slow!!
+// MY SOLUTION : OK BUT ONLY BEATS 30%
 var exist = function (board, word) {
-  let result = false;
-  let adjs = [
-    [0, 1], // Right
-    [1, 0], // Down
-    [0, -1], // Left
-    [-1, 0], // Up
+  let canMake = false;
+  let adj = [
+    [0, 1],
+    [0, -1],
+    [-1, 0],
+    [1, 0],
   ];
 
-  // tile: Current Tile
-  // str: Word to be built. str[0] = next char to look for
-  // currBoard: Current Board- replace past tiles with "null"
-  function check(tile, str, currBoard) {
-    if (!result) {
-      // If str is empty, return true!
-      if (str === "") {
-        result = true;
-        return;
-      }
-      // If tile out of bounds, ignore
-      if (!currBoard[tile[0]] || !currBoard[tile[0]][tile[1]]) return;
-      // If tile has matching char, we have a lead...
-      if (currBoard[tile[0]][tile[1]] == str.charAt(0)) {
-        currBoard[tile[0]][tile[1]] = null; // Burn your trail
-        let newStr = str.slice(1);
-        for (let adj of adjs) {
-          check(
-            [tile[0] + adj[0], tile[1] + adj[1]],
-            newStr,
-            currBoard.map((item) => item.slice())
-          );
+  // x = x dimention, y = y dimention, idx = currIndex
+  function recur(x, y, idx) {
+    if (idx == word.length) canMake = true;
+    else {
+      for (let next of adj) {
+        let X = x + next[0];
+        let Y = y + next[1];
+        if (board[X]?.[Y] == word.charAt(idx)) {
+          let char = board[X][Y];
+          board[X][Y] = null; // Burn Trail
+          recur(X, Y, idx + 1);
+          board[X][Y] = char; // Restore Trail
+          if (canMake) return true;
         }
       }
     }
   }
+
   for (let i = 0; i < board.length; i++) {
     for (let j = 0; j < board[0].length; j++) {
-      if (result) return result;
-      check(
-        [i, j],
-        word,
-        board.map((item) => item.slice())
-      );
+      if (board[i][j] == word.charAt(0)) {
+        let char = board[i][j];
+        board[i][j] = null; // Burn Trail
+        recur(i, j, 1);
+        board[i][j] = char; // Restore Trail
+        if (canMake) return true;
+      }
     }
   }
-  return result;
+  return false;
 };
 
-// I Think the issue with speed is the amount of array copies I'm dealing with.
-// If we can simplify the info that is passed into our recursive calls...
-// ...then it will be faster.
-
-// LEETCODE OPTIMIZED
+// LEETCODE OPTIMIZED : BEATS 95%!?! ------------------------------------
 var existTwo = function (board, word) {
-  let result = false;
-  var check = function (x, y, index) {
-    if (!result) {
-      if (x < 0 || y < 0 || x >= board.length || y >= board[0].length) return; // out of bounds
-      if (board[x][y] != word[index]) return; // wrong character
-      if (index == word.length - 1) {
-        result = true; // success
-        return;
-      }
-      board[x][y] = null; // mark our path so we dont go back and forth
-      check(x + 1, y, index + 1); // Down
-      check(x - 1, y, index + 1); // Up
-      check(x, y + 1, index + 1); // Right
-      check(x, y - 1, index + 1); // Left
-      board[x][y] = word[index]; // reset our board , very important
-    }
-  };
-
-  for (let index = 0; index < board.length; index++) {
-    for (let j = 0; j < board[0].length; j++) {
-      if (board[index][j] == word[0]) {
-        check(index, j, 0);
-        if (result) return result;
-      }
-    }
-  }
-
-  return result;
+  return isValidByAvailableSymbols(board, word) &&
+    isValidForSegmentsOfWord(board, word)
+    ? checkPhrase(board, word)
+    : false;
 };
 
-// Practice
-// Given an m x n grid of characters board and a string word, return true if word exists in the grid.
-// Idea: pass in coords
-var existThree = function (board, word) {
-  let result = false;
-  function check(x, y, index) {
-    if (!result) {
-      if (0 > x || x >= board.length || 0 > y || y >= board.length[0]) return;
-      if (board[x][y] != word[index]) return; // wrong character
-      if (index == word.length - 1) {
-        result = true;
-        return;
-      }
-
-      board[x][y] = null; // Burn Trail
-      check(x - 1, y, index + 1); // Up
-      check(x + 1, y, index + 1); // Down
-      check(x, y - 1, index + 1); // Left
-      check(x, y + 1, index + 1); // Right
-      board[x][y] = word.charAt(index);
-    }
-  }
+// Checks if all letters in word exist in board
+const isValidByAvailableSymbols = (board, word) => {
+  let wordCounter = {};
 
   for (let i = 0; i < board.length; i++) {
-    for (let j = 0; j < board[0].length; j++) {
-      check(i, j, 0);
-      if (result) return result;
+    for (let j = 0; j < board[i].length; j++) {
+      wordCounter[board[i][j]] = (wordCounter[board[i][j]] || 0) + 1;
     }
   }
-  return result;
+
+  for (let i = 0; i < word.length; i++) {
+    if (wordCounter[word[i]] !== undefined && wordCounter[word[i]] >= 0)
+      wordCounter[word[i]]--;
+    else return false;
+  }
+
+  return true;
+};
+
+// Splits word into 3 segments and check the validity of each segment
+const isValidForSegmentsOfWord = (board, word) => {
+  const thirdLength = Math.floor(word.length / 3);
+  const twoThirdLength = Math.floor((word.length * 2) / 3);
+
+  if (word.length > 5) {
+    const firstSegment = word.substring(0, thirdLength);
+    const secondSegment = word.substring(thirdLength, twoThirdLength);
+    const thirdSegment = word.substring(twoThirdLength);
+
+    if (
+      !checkPhrase(clone(board), firstSegment) ||
+      !checkPhrase(clone(board), secondSegment) ||
+      !checkPhrase(clone(board), thirdSegment)
+    )
+      return false;
+  }
+  return true;
+};
+
+const checkPhrase = (board, word) => {
+  for (let i = 0; i < board.length; i++) {
+    for (let j = 0; j < board[i].length; j++) {
+      if (dfs(board, word, i, j)) return true;
+    }
+  }
+
+  return false;
+};
+
+const clone = (a) => JSON.parse(JSON.stringify(a));
+
+const directionMap = [0, 1, 0, -1, 0];
+const dfs = (board, word, i, j, cursor = 0) => {
+  // when cursor reaches the length of the word, it means
+  // that the script handled whole word in the previous step and the result is true
+  if (cursor === word.length) return true;
+
+  // reached the edge of the board or already handled symbol
+  if (board[i]?.[j] !== word[cursor] || board[i][j] === -1) return false;
+
+  // mark as visited
+  board[i][j] = -1;
+
+  // handle the neighbours
+  for (let k = 0; k < 4; k++) {
+    if (
+      dfs(board, word, i + directionMap[k], j + directionMap[k + 1], cursor + 1)
+    )
+      return true;
+  }
+
+  board[i][j] = word[cursor];
+
+  return false;
 };
 
 let board = [
