@@ -12,30 +12,8 @@ import { printArray } from "../../HelperFuncs/PrintArray.js";
 
 // ITerating throguh an object with (for...in...) is MUCH FASTER than iterating throguh a string with (for...of...).
 
-var findMinHeightTrees = function (n, edges) {
-  if (!edges || n < 2) return [0];
-  let graph = []; // Graph can be represented as 2D array, sicne the values are numerical!
-  let leaves = [];
-  for (let [x, y] of edges) {
-    graph[x] = graph[x] || [];
-    graph[y] = graph[y] || [];
-    graph[x].push(y);
-    graph[y].push(x);
-  }
-
-  graph.map((pts, i) => pts.length === 1 && leaves.push(i)); // Find Leaves
-
-  while (n > 2) {
-    n = n - leaves.length;
-    let nxt_leaves = [];
-    for (let leave of leaves) {
-      // remove leaf node and itself in related nodes
-      tmp = graph[leave].pop();
-      graph[tmp].splice(graph[tmp].indexOf(leave), 1);
-      // save new leaf node
-      graph[tmp].length === 1 && nxt_leaves.push(tmp);
-    }
-    leaves = nxt_leaves;
-  }
-  return leaves;
-};
+let hash = { a: 0 };
+if (hash["a"] != null) console.log("a");
+if (hash["a"] == null) console.log("null A");
+if (hash["b"] == null) console.log("null B");
+console.log(Object.keys(hash).length);
