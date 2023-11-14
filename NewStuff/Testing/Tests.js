@@ -12,8 +12,16 @@ import { printArray } from "../../HelperFuncs/PrintArray.js";
 
 // ITerating throguh an object with (for...in...) is MUCH FASTER than iterating throguh a string with (for...of...).
 
-let hash = { a: 0 };
-if (hash["a"] != null) console.log("a");
-if (hash["a"] == null) console.log("null A");
-if (hash["b"] == null) console.log("null B");
-console.log(Object.keys(hash).length);
+let map = new Map();
+map.set(1, 111);
+map.set(2, 222);
+map.set(3, 333);
+console.log(map);
+console.log(map.get(5));
+let keys = map.keys();
+console.log(map.keys());
+
+console.log(keys.next());
+console.log(keys.next());
+console.log(keys.next().value);
+console.log(keys.next());
