@@ -10,18 +10,52 @@ import { printArray } from "../../HelperFuncs/PrintArray.js";
 
 // Arr.fill is dangerous for 2D arrays- the arrays it creates reference each other, so an operation on one affects them all.
 
-// ITerating throguh an object with (for...in...) is MUCH FASTER than iterating throguh a string with (for...of...).
+// Iterating throguh an object with (for...in...) is MUCH FASTER than iterating throguh a string with (for...of...).
 
-let map = new Map();
-map.set(1, 111);
-map.set(2, 222);
-map.set(3, 333);
-console.log(map);
-console.log(map.get(5));
-let keys = map.keys();
-console.log(map.keys());
+/**
+ * @param {number} numCourses
+ * @param {number[][]} prerequisites
+ * @return {boolean}
+ */
+var canFinish = function (numCourses, prerequisites) {
+  // Put data in adj list
+  let adjList = {}; // Stores course : Set(prereqs)
+  let canTake = true;
+  for (let [classA, classB] of prerequisites) {
+    if (!adjList[classA]) adjList[classA] = new Set();
+    if (!adjList[classB]) adjList[classB] = new Set();
+    adjList[classA].add(classB);
+  }
 
-console.log(keys.next());
-console.log(keys.next());
-console.log(keys.next().value);
-console.log(keys.next());
+  for (let course in adjList) {
+    // Do a DFS
+    let plan = new Set([Number(course)]); // List of classes you're plan on taking
+    if (canTake) recur(course, plan);
+  }
+
+  return canTake;
+
+  function recur(course, plan) {
+    // DFS on all prereqs
+    let prereqs = adjList[course];
+    for (let prereq of prereqs) {
+      if (plan.has(prereq) || !canTake) {
+        canTake = false; // Check for Infinate Loops
+        break;
+      } else {
+        plan.add(prereq);
+        recur(prereq, plan);
+        adjList[course].delete(prereq);
+      }
+    }
+    return;
+  }
+};
+
+let courses = [
+  [0, 1],
+  [0, 2],
+  [1, 2],
+];
+
+console.log(canFinish(3, courses));

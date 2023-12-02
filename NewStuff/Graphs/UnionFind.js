@@ -2,45 +2,71 @@
 // Example use Case: "Given a set of nodes and edges, which components belong to a group? How many groups exist?"
 
 class UnionFind {
-  constructor(N) {
-    // Array w/ each value = index.
-    // Element's index represents node, while value represents it's parent.
-    // If value = index, the node is a HEAD.
-    this.Array = Array.from(Array(N), (_, i) => i);
-    // Array filled w/ 1's.
-    // Represents the amount of nodes a HEAD has.
-    this.Count = new Array(N).fill(1);
+  constructor(size) {
+    // { length: n } is an "arraylike" object with property obj.length = n.
+    // It is here so Array.from creates an object of n length.
+    // (_, i) => i simply sets each value of the new array to equal its index.
+    // So in the end, if n = 5, arr = [0, 1, 2, 3, 4].
+    this.arr = Array.from({ length: size }, (_, i) => i);
   }
 
-  // Combine node x's group with node y's group.
-  // Changing 1 HEAD value changes all children as well
-  union(x, y) {
-    let headX = this.find(x);
-    let headY = this.find(y);
-
-    if (headX == headY) return; // Already Unioned
-
-    // Change depending on the bigger Count
-    if (this.Count[headX] < this.Count[headY]) {
-      this.Array[headX] = headY;
-      this.Count[headY] += this.Count[headX];
-    } else {
-      this.Array[headY] = headX;
-      this.Count[headX] += this.Count[headY];
-    }
+  // Find's root value
+  // Inefficient, could take O(n).
+  find(val) {
+    if (this.arr[val] == val) return val;
+    let retVal = this.find(this.arr[val]);
+    return retVal;
   }
 
-  // Find the HEAD of node x.
-  find(x) {
-    // if (this.Array[x] != x) this.Array[x] = this.find(this.Array[x]);
-    // return this.Array[x];
-    if (this.Array[x] == x) return x;
-    return this.find(this.Array[x]);
+  // Merges two groups together
+  // Inefficent, could lead to chain tree with O(n) finds.
+  union(valOne, valTwo) {
+    let prtA = this.find(valOne);
+    let prtB = this.find(valTwo);
+    this.arr[prtB] = prtA;
   }
 }
 
-let newUF = new UnionFind(4);
-newUF.union(2, 3);
-console.log(newUF.Array);
+let newUF = new UnionFind(5);
+
+newUF.union(0, 1);
+newUF.union(2, 1);
+newUF.union(3, 4);
+newUF.union(4, 0);
+
+console.log(newUF.find(1));
 console.log(newUF.find(3));
-console.log("Done");
+
+// Union By Rank + Path Compression are better.
+// Nearly constant time complexity.
+class UnionFindOptimized {
+  constructor(size) {
+    this.arr = Array.from({ length: size }, (_, i) => i);
+    this.size = Array(size).fill(1); // Tracks size of trees to balance them
+  }
+
+  // Find's root value + reset chain to directly link instead. "Path Compression"
+  find(val) {
+    if (this.arr[val] == val) return val;
+    let parent = find(this.arr[val]);
+    this.arr[val] = parent;
+    return result;
+  }
+
+  // Merges smaller group into bigger group. "Union By Rank"
+  union(valOne, valTwo) {
+    let prtA = this.find(valOne);
+    let sizeA = this.size[prtA];
+    let prtB = this.find(valTwo);
+    let sizeB = this.size[prtB];
+    if (prtA == prtB) return;
+
+    if (sizeA < sizeB) {
+      this.arr[prtA] = prtB;
+      sizeB += sizeA;
+    } else {
+      this.arr[prtB] = prtA;
+      sizeA += sizeB;
+    }
+  }
+}
