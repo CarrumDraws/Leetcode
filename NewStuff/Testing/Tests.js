@@ -12,50 +12,6 @@ import { printArray } from "../../HelperFuncs/PrintArray.js";
 
 // Iterating throguh an object with (for...in...) is MUCH FASTER than iterating throguh a string with (for...of...).
 
-/**
- * @param {number} numCourses
- * @param {number[][]} prerequisites
- * @return {boolean}
- */
-var canFinish = function (numCourses, prerequisites) {
-  // Put data in adj list
-  let adjList = {}; // Stores course : Set(prereqs)
-  let canTake = true;
-  for (let [classA, classB] of prerequisites) {
-    if (!adjList[classA]) adjList[classA] = new Set();
-    if (!adjList[classB]) adjList[classB] = new Set();
-    adjList[classA].add(classB);
-  }
+let arr = [{ height: 5 }];
 
-  for (let course in adjList) {
-    // Do a DFS
-    let plan = new Set([Number(course)]); // List of classes you're plan on taking
-    if (canTake) recur(course, plan);
-  }
-
-  return canTake;
-
-  function recur(course, plan) {
-    // DFS on all prereqs
-    let prereqs = adjList[course];
-    for (let prereq of prereqs) {
-      if (plan.has(prereq) || !canTake) {
-        canTake = false; // Check for Infinate Loops
-        break;
-      } else {
-        plan.add(prereq);
-        recur(prereq, plan);
-        adjList[course].delete(prereq);
-      }
-    }
-    return;
-  }
-};
-
-let courses = [
-  [0, 1],
-  [0, 2],
-  [1, 2],
-];
-
-console.log(canFinish(3, courses));
+if (arr[-1]?.height == 5) console.log("Five");
