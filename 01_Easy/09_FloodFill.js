@@ -22,13 +22,9 @@ var floodFill = function (image, sr, sc, color) {
       return;
     } else {
       image[sr][sc] = color;
-      // recur:right
       recurFill(sr, sc + 1);
-      // recur:left
       recurFill(sr, sc - 1);
-      // recur:top
       recurFill(sr - 1, sc);
-      // recur:bottom
       recurFill(sr + 1, sc);
     }
   }

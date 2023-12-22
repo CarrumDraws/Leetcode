@@ -12,6 +12,8 @@ import { printArray } from "../../HelperFuncs/PrintArray.js";
 
 // Iterating throguh an object with (for...in...) is MUCH FASTER than iterating throguh a string with (for...of...).
 
-let arr = [{ height: 5 }];
-
-if (arr[-1]?.height == 5) console.log("Five");
+let A = "0";
+let B = "1";
+let carry = "0";
+let char = String(Number(A) ^ Number(B) ^ Number(carry));
+console.log(char);
