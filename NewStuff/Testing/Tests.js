@@ -12,8 +12,13 @@ import { printArray } from "../../HelperFuncs/PrintArray.js";
 
 // Iterating throguh an object with (for...in...) is MUCH FASTER than iterating throguh a string with (for...of...).
 
-let A = "0";
-let B = "1";
-let carry = "0";
-let char = String(Number(A) ^ Number(B) ^ Number(carry));
-console.log(char);
+let arr1 = [1, 2, 3, 4];
+let arr2 = [2, 4];
+
+let arr3 = arr1.filter((ele) => !arr2.includes(ele));
+console.log(arr3);
+
+let arr4 = ["1", "2", "3"];
+console.log(arr4);
+arr4 = arr4.map((val) => Number(val));
+console.log(arr4);
