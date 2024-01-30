@@ -12,5 +12,31 @@ import { printArray } from "../../HelperFuncs/PrintArray.js";
 
 // Iterating throguh an object with (for...in...) is MUCH FASTER than iterating throguh a string with (for...of...).
 
-let str = "Hello";
-console.log(undefined == undefined);
+const mySet = new Set();
+
+mySet.add(1);
+mySet.add(2);
+mySet.add(3);
+
+for (const value of mySet) {
+  console.log(value);
+  console.log(typeof value);
+}
+let matrix = [
+  [1, 2, 3, 4],
+  [5, 0, 7, 8],
+  [0, 10, 11, 12],
+  [13, 14, 15, 0],
+];
+let arr = [
+  [0, 0, 3, 0],
+  [0, 0, 7, 8],
+  [0, 10, 11, 12],
+  [0, 14, 15, 0],
+];
+let arr2 = [
+  [0, 0, 3, 0],
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+  [0, 0, 0, 0],
+];
