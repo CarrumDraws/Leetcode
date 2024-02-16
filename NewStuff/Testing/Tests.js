@@ -12,31 +12,21 @@ import { printArray } from "../../HelperFuncs/PrintArray.js";
 
 // Iterating throguh an object with (for...in...) is MUCH FASTER than iterating throguh a string with (for...of...).
 
-const mySet = new Set();
+var combine = function (n, k) {
+  const ret = [];
+  recur(1, []);
+  return ret;
 
-mySet.add(1);
-mySet.add(2);
-mySet.add(3);
+  function recur(idx, arr) {
+    if (arr.length == k) ret.push([...arr]);
+    else {
+      for (let i = idx; i <= n; ++i) {
+        arr.push(i);
+        recur(i + 1, arr);
+        arr.pop();
+      }
+    }
+  }
+};
 
-for (const value of mySet) {
-  console.log(value);
-  console.log(typeof value);
-}
-let matrix = [
-  [1, 2, 3, 4],
-  [5, 0, 7, 8],
-  [0, 10, 11, 12],
-  [13, 14, 15, 0],
-];
-let arr = [
-  [0, 0, 3, 0],
-  [0, 0, 7, 8],
-  [0, 10, 11, 12],
-  [0, 14, 15, 0],
-];
-let arr2 = [
-  [0, 0, 3, 0],
-  [0, 0, 0, 0],
-  [0, 0, 0, 0],
-  [0, 0, 0, 0],
-];
+console.log(combine(4, 3));

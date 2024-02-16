@@ -1,11 +1,20 @@
+class Node {
+  constructor(key, val, prev = null, next = null) {
+    this.key = key;
+    this.val = val;
+    this.prev = prev;
+    this.next = next;
+  }
+}
+
 /**
  * @param {number} capacity
  */
-
-// Implement with Map!
-// Note: This solution only beats 36% of people. there are better solutions...
+// Idea: Use a Doubly Linked List, and keep track of the tail.
 var LRUCache = function (capacity) {
-  this.map = new Map();
+  this.head = new Node(-1, -1); // Dummy that points to Oldest
+  this.tail = this.head; // Points to newest
+  this.hash = {};
   this.capacity = capacity;
 };
 
@@ -14,12 +23,13 @@ var LRUCache = function (capacity) {
  * @return {number}
  */
 LRUCache.prototype.get = function (key) {
-  if (this.map.has(key)) {
-    let val = this.map.get(key);
-    this.map.delete(key);
-    this.map.set(key, val);
+  if (this.hash[key]) {
+    let val = this.hash[key].val;
+    this.deleteNode(this.hash[key]);
+    this.addNode(key, val);
     return val;
-  } else return -1;
+  }
+  return -1;
 };
 
 /**
@@ -28,19 +38,29 @@ LRUCache.prototype.get = function (key) {
  * @return {void}
  */
 LRUCache.prototype.put = function (key, value) {
-  if (this.map.has(key)) {
-    this.map.delete(key);
-    this.map.set(key, value);
-  } else {
-    if (this.map.size >= this.capacity) {
-      // Case: Greater than capacity, delete FIRST element in map
-      this.map.delete(this.map.keys().next().value); // Delete first element?
-      this.map.set(key, value);
-    } else {
-      // Case: Less than capacity, just add it in.
-      this.map.set(key, value);
-    }
-  }
+  // If key already exists, delete the key node
+  if (this.hash[key]) this.deleteNode(this.hash[key]);
+  // else if at capacity, delete head node
+  else if (this.capacity <= 0) this.deleteNode();
+
+  // add new node at end
+  this.addNode(key, value);
+};
+
+LRUCache.prototype.deleteNode = function (node = this.head.next) {
+  delete this.hash[node.key];
+  node.prev.next = node.next;
+  if (node.next) node.next.prev = node.prev;
+  if (node == this.tail) this.tail = node.prev;
+  this.capacity++;
+};
+
+LRUCache.prototype.addNode = function (key, value) {
+  let newNode = new Node(key, value, this.tail, null);
+  this.hash[key] = newNode;
+  this.tail.next = newNode;
+  this.tail = newNode;
+  this.capacity--;
 };
 
 /**
@@ -49,14 +69,3 @@ LRUCache.prototype.put = function (key, value) {
  * var param_1 = obj.get(key)
  * obj.put(key,value)
  */
-
-let lRUCache = new LRUCache(2);
-lRUCache.put(1, 1); // cache is {1=1}
-lRUCache.put(2, 2); // cache is {1=1, 2=2}
-console.log(lRUCache.get(1)); // return 1
-lRUCache.put(3, 3); // LRU key was 2, evicts key 2, cache is {1=1, 3=3}
-console.log(lRUCache.get(2)); // returns -1 (not found)
-lRUCache.put(4, 4); // LRU key was 1, evicts key 1, cache is {4=4, 3=3}
-console.log(lRUCache.get(1)); // return -1 (not found)
-console.log(lRUCache.get(3)); // return 3
-console.log(lRUCache.get(4)); // return 4
