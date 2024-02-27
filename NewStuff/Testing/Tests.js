@@ -12,6 +12,8 @@ import { printArray } from "../../HelperFuncs/PrintArray.js";
 
 // Iterating throguh an object with (for...in...) is MUCH FASTER than iterating throguh a string with (for...of...).
 
+// (0 == 1 == 1 == 0) is TRUE! When comparing multiple values, do a == b && c == d && a == c.
+
 var combine = function (n, k) {
   const ret = [];
   recur(1, []);
